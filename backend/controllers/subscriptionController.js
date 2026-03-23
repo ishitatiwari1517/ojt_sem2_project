@@ -47,7 +47,7 @@ const createSubscriptionOrder = asyncHandler(async (req, res) => {
     order = await razorpay.orders.create({
       amount: 9900,
       currency: "INR",
-      receipt: `sub_${req.user._id}_${Date.now()}`,
+      receipt: `sub_${req.user._id.toString().slice(-8)}_${Date.now().toString().slice(-8)}`,
       notes: { userId: req.user._id.toString(), plan: "premium", description: "EnergyLens Premium Subscription" },
     });
   } catch (e) {
