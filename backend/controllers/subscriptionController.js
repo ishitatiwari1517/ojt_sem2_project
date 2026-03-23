@@ -34,13 +34,29 @@ const createSubscriptionOrder = asyncHandler(async (req, res) => {
   if (req.user.subscription === "premium") {
     return res.status(400).json({ success: false, message: "You are already on Premium." });
   }
-  const razorpay = getRazorpay();
-  const order = await razorpay.orders.create({
-    amount: 9900,
-    currency: "INR",
-    receipt: `sub_${req.user._id}_${Date.now()}`,
-    notes: { userId: req.user._id.toString(), plan: "premium", description: "EnergyLens Premium Subscription" },
-  });
+
+  let razorpay;
+  try {
+    razorpay = getRazorpay();
+  } catch (e) {
+    return res.status(500).json({ success: false, message: e.message });
+  }
+
+  let order;
+  try {
+    order = await razorpay.orders.create({
+      amount: 9900,
+      currency: "INR",
+      receipt: `sub_${req.user._id}_${Date.now()}`,
+      notes: { userId: req.user._id.toString(), plan: "premium", description: "EnergyLens Premium Subscription" },
+    });
+  } catch (e) {
+    // Razorpay SDK errors use e.error.description
+    const msg = e?.error?.description || e?.message || "Razorpay order creation failed.";
+    const status = e?.statusCode || 500;
+    return res.status(status).json({ success: false, message: `Payment gateway error: ${msg}` });
+  }
+
   res.json({
     success: true,
     message: "Subscription order created",
