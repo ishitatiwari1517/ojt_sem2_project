@@ -50,14 +50,27 @@ export default function SubscriptionModal({ isOpen, onClose, onUpgradeSuccess })
     try {
       // Load Razorpay SDK
       const loaded = await loadRazorpay();
-      if (!loaded) throw new Error("Failed to load Razorpay. Check your internet connection.");
+      if (!loaded) throw new Error("Failed to load Razorpay SDK. Please check your internet connection.");
 
       // Create order on backend
       const orderRes = await fetch(`${API}/subscription/create-order`, {
         method: "POST", headers: authHeaders(),
       });
-      const orderData = await orderRes.json();
-      if (!orderData.success) throw new Error(orderData.message);
+
+      let orderData;
+      try {
+        orderData = await orderRes.json();
+      } catch {
+        throw new Error(`Server error (${orderRes.status}). Please try again later.`);
+      }
+
+      if (!orderData.success) {
+        // Give a helpful message if keys aren't configured
+        if (orderData.message?.includes("not configured")) {
+          throw new Error("Payment gateway not configured yet. Please contact support or try again later.");
+        }
+        throw new Error(orderData.message || "Failed to create payment order.");
+      }
 
       const { orderId, amount, currency, keyId } = orderData.data;
       const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -74,7 +87,6 @@ export default function SubscriptionModal({ isOpen, onClose, onUpgradeSuccess })
         theme: { color: "#fbbf24" },
         handler: async (response) => {
           try {
-            // Verify + upgrade on backend
             const verifyRes = await fetch(`${API}/subscription/verify-and-upgrade`, {
               method: "POST",
               headers: authHeaders(),
@@ -89,7 +101,7 @@ export default function SubscriptionModal({ isOpen, onClose, onUpgradeSuccess })
             setStep("success");
             onUpgradeSuccess?.(updatedUser);
           } catch (err) {
-            setError("Payment received but verification failed. Contact support with payment ID: " + response.razorpay_payment_id);
+            setError("Payment received but verification failed. Share this payment ID with support: " + response.razorpay_payment_id);
             setStep("error");
           }
         },
@@ -98,15 +110,16 @@ export default function SubscriptionModal({ isOpen, onClose, onUpgradeSuccess })
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", (r) => {
-        setError(`Payment failed: ${r.error.description}`);
+        setError(`Payment failed: ${r.error.description} (Code: ${r.error.code})`);
         setStep("error");
       });
       rzp.open();
     } catch (err) {
-      setError(err.message || "Something went wrong.");
+      setError(err.message || "Something went wrong. Please try again.");
       setStep("error");
     }
   };
+
 
   return (
     <div style={s.overlay} onClick={(e) => e.target === e.currentTarget && step === "plans" && onClose()}>
