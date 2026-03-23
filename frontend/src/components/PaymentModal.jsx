@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CreditCard, X, CheckCircle, AlertCircle, Loader, Shield } from "lucide-react";
 
-const API = "http://localhost:8000/api";
+const API = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 const token = () => localStorage.getItem("token");
 const authHeaders = () => ({
   "Content-Type": "application/json",

@@ -4,7 +4,7 @@ import {
   Plus, Trash2, ChevronDown, ChevronUp, AlertTriangle, Clock,
 } from "lucide-react";
 
-const API = "http://localhost:8000/api";
+const API = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
 const statusConfig = {
   active: { label: "Active", color: "#00e676", icon: ShieldCheck, bg: "rgba(0,230,118,0.08)", border: "rgba(0,230,118,0.2)" },
