@@ -83,7 +83,28 @@ export default function SubscriptionModal({ isOpen, onClose, onUpgradeSuccess })
         name: "EnergyLens",
         description: "Premium Subscription — ₹99/month",
         order_id: orderId,
-        prefill: { name: user.name || "", email: user.email || "" },
+        prefill: {
+          name: user.name || "",
+          email: user.email || "",
+          contact: user.phone || "",  // required for UPI to appear
+        },
+        // Explicitly enable UPI along with other methods
+        method: {
+          upi: 1,
+          card: 1,
+          netbanking: 1,
+          wallet: 1,
+        },
+        config: {
+          display: {
+            blocks: {
+              upi: { name: "Pay via UPI", instruments: [{ method: "upi" }] },
+              other: { name: "Other Payment Modes", instruments: [{ method: "card" }, { method: "netbanking" }, { method: "wallet" }] },
+            },
+            sequence: ["block.upi", "block.other"],
+            preferences: { show_default_blocks: true },
+          },
+        },
         theme: { color: "#fbbf24" },
         handler: async (response) => {
           try {
