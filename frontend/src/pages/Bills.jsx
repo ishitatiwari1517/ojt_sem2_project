@@ -32,7 +32,15 @@ export default function Bills() {
     setLoading(true);
     try {
       const tariffRes = await fetchTariffs();
-      setTariffs(tariffRes.data.data || []);
+      const loadedTariffs = tariffRes.data.data || [];
+      setTariffs(loadedTariffs);
+
+      if (user?.state) {
+        const matchingTariff = loadedTariffs.find(t => t.state === user.state || t.name.includes(user.state));
+        if (matchingTariff && !form.tariffSlabId) {
+          setForm(prev => ({ ...prev, tariffSlabId: matchingTariff._id }));
+        }
+      }
 
       if (isPremium) {
         const billsRes = await fetchBills();
