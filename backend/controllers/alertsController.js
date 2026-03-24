@@ -1,6 +1,11 @@
 const { getAlerts } = require("../processing/alertsEngine");
 const Alert = require("../models/Alert");
+const Warranty = require("../models/Warranty");
 const asyncHandler = require("../utils/asyncHandler");
+
+// Helper: days between two dates
+const daysDiff = (from, to) =>
+  Math.ceil((new Date(to) - new Date(from)) / (1000 * 60 * 60 * 24));
 
 // GET /api/alerts
 const getAllAlerts = asyncHandler(async (req, res) => {
@@ -10,14 +15,39 @@ const getAllAlerts = asyncHandler(async (req, res) => {
   // Fetch persisted alerts from DB (unresolved)
   const dbAlerts = await Alert.find({ resolved: false }).sort({ createdAt: -1 }).limit(50);
 
+  // Generate Warranty alerts dynamically
+  const warranties = await Warranty.find();
+  const now = new Date();
+  const warrantyAlerts = [];
+  
+  warranties.forEach((w) => {
+    const daysToEnd = daysDiff(now, w.warrantyEndDate);
+    if (daysToEnd < 0) {
+      warrantyAlerts.push({ applianceName: w.applianceName, type: "warranty_expired", message: `⚠️ Warranty for ${w.applianceName} expired ${Math.abs(daysToEnd)} days ago`, severity: "high" });
+    } else if (daysToEnd <= 30) {
+      warrantyAlerts.push({ applianceName: w.applianceName, type: "warranty_expiring", message: `🔔 Warranty for ${w.applianceName} expires in ${daysToEnd} day${daysToEnd === 1 ? "" : "s"}`, severity: daysToEnd <= 7 ? "high" : "medium" });
+    }
+
+    if (w.nextServiceDate) {
+      const daysToService = daysDiff(now, w.nextServiceDate);
+      if (daysToService < 0) {
+        warrantyAlerts.push({ applianceName: w.applianceName, type: "service_overdue", message: `🔧 Service overdue for ${w.applianceName} by ${Math.abs(daysToService)} days`, severity: "high" });
+      } else if (daysToService <= 14) {
+        warrantyAlerts.push({ applianceName: w.applianceName, type: "service_due", message: `🔧 Service due for ${w.applianceName} in ${daysToService} day${daysToService === 1 ? "" : "s"}`, severity: "medium" });
+      }
+    }
+  });
+
+  const allActiveAlerts = [...engineAlerts, ...warrantyAlerts];
+
   res.json({
     success: true,
     message:
-      (engineAlerts.length + dbAlerts.length) === 0
+      (allActiveAlerts.length + dbAlerts.length) === 0
         ? "No alerts detected"
-        : `${engineAlerts.length + dbAlerts.length} alert(s) found`,
+        : `${allActiveAlerts.length + dbAlerts.length} alert(s) found`,
     data: {
-      activeAlerts: engineAlerts,
+      activeAlerts: allActiveAlerts,
       savedAlerts: dbAlerts,
     },
   });

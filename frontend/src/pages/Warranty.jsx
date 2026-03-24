@@ -21,7 +21,6 @@ const fmt = (d) => d ? new Date(d).toLocaleDateString("en-IN", { day: "numeric",
 
 export default function Warranty() {
   const [warranties, setWarranties] = useState([]);
-  const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
@@ -37,14 +36,9 @@ export default function Warranty() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [wRes, aRes] = await Promise.all([
-        fetch(`${API}/warranty`, { headers: authHeaders() }),
-        fetch(`${API}/warranty/alerts`, { headers: authHeaders() }),
-      ]);
+      const wRes = await fetch(`${API}/warranty`, { headers: authHeaders() });
       const wData = await wRes.json();
-      const aData = await aRes.json();
       setWarranties(wData.data || []);
-      setAlerts(aData.data || []);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   }, []);
@@ -92,7 +86,6 @@ export default function Warranty() {
   };
 
   const statusCounts = {
-    alerts: alerts.length,
     expired: warranties.filter((w) => w.status === "expired").length,
     expiring: warranties.filter((w) => w.status === "expiring_soon").length,
     total: warranties.length,
@@ -115,7 +108,6 @@ export default function Warranty() {
       <div style={s.summaryRow}>
         {[
           { label: "Total Tracked", value: statusCounts.total, color: "#00e676" },
-          { label: "Active Alerts", value: statusCounts.alerts, color: statusCounts.alerts > 0 ? "#ef5350" : "#5c6370" },
           { label: "Expired", value: statusCounts.expired, color: statusCounts.expired > 0 ? "#ef5350" : "#5c6370" },
           { label: "Expiring Soon", value: statusCounts.expiring, color: statusCounts.expiring > 0 ? "#f59e0b" : "#5c6370" },
         ].map((m) => (
@@ -126,19 +118,6 @@ export default function Warranty() {
         ))}
       </div>
 
-      {/* Alerts banner */}
-      {alerts.length > 0 && (
-        <div style={s.alertsBanner}>
-          <AlertTriangle size={16} color="#f59e0b" />
-          <div style={{ flex: 1 }}>
-            {alerts.map((a, i) => (
-              <div key={i} style={{ ...s.alertItem, color: a.severity === "high" ? "#ef5350" : "#f59e0b" }}>
-                {a.message}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Add Form */}
       {showForm && (
@@ -332,7 +311,7 @@ const s = {
   title: { display: "flex", alignItems: "center", fontSize: "1.5rem", fontWeight: 800, color: "#e8eaed", margin: 0 },
   subtitle: { color: "#9aa0ac", fontSize: "0.875rem", marginTop: 4 },
   addBtn: { display: "flex", alignItems: "center", gap: 6, background: "#00e676", color: "#0d1117", border: "none", borderRadius: 8, padding: "10px 18px", fontWeight: 700, fontSize: "0.875rem", cursor: "pointer" },
-  summaryRow: { display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 },
+  summaryRow: { display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 20 },
   summaryCard: { background: "#111827", border: "1px solid #1e2d40", borderRadius: 12, padding: "16px 20px", textAlign: "center" },
   summaryVal: { fontSize: "2rem", fontWeight: 800, lineHeight: 1 },
   summaryLabel: { fontSize: "0.72rem", color: "#5c6370", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.5px" },
