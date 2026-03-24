@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Zap,
@@ -13,6 +13,7 @@ import {
   Lightbulb,
   CloudSun,
   Shield,
+  LogOut,
 } from "lucide-react";
 import SubscriptionModal from "./SubscriptionModal";
 
@@ -36,6 +37,13 @@ export default function Sidebar() {
   const [showModal, setShowModal] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isPremium = user.subscription === "premium";
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   return (
     <>
@@ -107,6 +115,13 @@ export default function Sidebar() {
               </button>
             );
           })}
+          
+          <div style={{ marginTop: "auto", marginBottom: "8px" }}>
+            <button style={styles.logoutBtn} onClick={handleLogout}>
+              <LogOut size={18} color="#f87171" strokeWidth={1.5} />
+              <span style={{ color: "#f87171" }}>Log Out</span>
+            </button>
+          </div>
         </nav>
 
         {/* Subscription Status */}
@@ -160,6 +175,12 @@ const styles = {
     display: "flex", alignItems: "center", gap: "12px", padding: "11px 12px",
     borderRadius: "8px", fontSize: "0.875rem", fontWeight: "500", cursor: "pointer",
     background: "none", border: "none", width: "100%", textAlign: "left", color: "#5c6370",
+  },
+  logoutBtn: {
+    display: "flex", alignItems: "center", gap: "12px", padding: "11px 12px",
+    borderRadius: "8px", fontSize: "0.875rem", fontWeight: "500", cursor: "pointer",
+    background: "rgba(248, 113, 113, 0.08)", border: "1px solid rgba(248, 113, 113, 0.2)",
+    width: "100%", textAlign: "left", transition: "all 0.2s ease",
   },
   activeIndicator: {
     position: "absolute", right: "12px", width: "6px", height: "6px",
