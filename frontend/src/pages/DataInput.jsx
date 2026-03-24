@@ -201,33 +201,7 @@ export default function DataInput() {
         </div>
       )}
 
-      {/* CSV template hint */}
-      {tab === "csv" && (
-        <div className="card" style={{ maxWidth: "680px", marginTop: "20px" }}>
-          <h3 className="section-title">CSV Template</h3>
-          <pre
-            style={{
-              background: "#0d1117",
-              padding: "16px",
-              borderRadius: "8px",
-              fontSize: "0.8rem",
-              color: "#00e676",
-              overflow: "auto",
-              border: "1px solid #1e2d40",
-            }}
-          >
-{`applianceName,date,units,durationHours,costPerUnit,category
-Air Conditioner,2026-03-01,4.2,6,8,cooling
-Refrigerator,2026-03-01,1.5,24,8,kitchen
-LED TV,2026-03-01,0.8,4,8,entertainment
-Water Heater,2026-03-01,2.0,2,8,heating
-LED Lights,2026-03-01,0.3,8,8,lighting`}
-          </pre>
-          <p style={{ fontSize: "0.78rem", color: "#9aa0ac", marginTop: "10px" }}>
-            💡 <code>costPerUnit</code> and <code>category</code> are optional · date format: YYYY-MM-DD
-          </p>
-        </div>
-      )}
+
     </div>
   );
 }
