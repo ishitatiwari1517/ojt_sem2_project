@@ -72,7 +72,10 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const res = await googleAuthLogin({ credential: credentialResponse.credential });
+      const res = await googleAuthLogin({ 
+        credential: credentialResponse.credential,
+        state: tab === "signup" ? form.state : undefined
+      });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data?.user || {}));
       setSuccess("Google sign-in successful! Redirecting…");

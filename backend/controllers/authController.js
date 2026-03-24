@@ -96,7 +96,7 @@ exports.getMe = asyncHandler(async (req, res) => {
 
 // POST /api/auth/google — verify Google ID token, find/create user, return JWT
 exports.googleAuth = asyncHandler(async (req, res) => {
-  const { credential } = req.body;
+  const { credential, state } = req.body;
 
   if (!credential) {
     res.status(400);
@@ -127,6 +127,7 @@ exports.googleAuth = asyncHandler(async (req, res) => {
       password: `google_${googleId}_${Date.now()}`, // placeholder, can't be used to log in
       googleId,
       avatar: picture,
+      state: state || "General",
     });
   } else if (!user.googleId) {
     // Existing email/password user — link their Google account
