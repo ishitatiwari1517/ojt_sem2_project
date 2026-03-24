@@ -20,7 +20,6 @@ import SubscriptionModal from "./SubscriptionModal";
 const freeItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/appliances", icon: Zap, label: "Appliances" },
-  { to: "/data-input", icon: Database, label: "Data Input" },
   { to: "/analysis", icon: BarChart2, label: "Analysis" },
   { to: "/alerts", icon: Bell, label: "Alerts" },
   { to: "/insights", icon: Lightbulb, label: "Insights" },

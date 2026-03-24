@@ -6,7 +6,6 @@ import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Appliances from "./pages/Appliances";
-import DataInput from "./pages/DataInput";
 import Analysis from "./pages/Analysis";
 import Bills from "./pages/Bills";
 import Predictions from "./pages/Predictions";
@@ -30,7 +29,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="appliances" element={<Appliances />} />
-          <Route path="data-input" element={<DataInput />} />
           <Route path="analysis" element={<Analysis />} />
           <Route path="bills" element={<Bills />} />
           <Route path="predictions" element={<Predictions />} />
