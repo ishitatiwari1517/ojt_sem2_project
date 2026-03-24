@@ -26,6 +26,8 @@ const getAllAlerts = asyncHandler(async (req, res) => {
       warrantyAlerts.push({ applianceName: w.applianceName, type: "warranty_expired", message: `⚠️ Warranty for ${w.applianceName} expired ${Math.abs(daysToEnd)} days ago`, severity: "high" });
     } else if (daysToEnd <= 30) {
       warrantyAlerts.push({ applianceName: w.applianceName, type: "warranty_expiring", message: `🔔 Warranty for ${w.applianceName} expires in ${daysToEnd} day${daysToEnd === 1 ? "" : "s"}`, severity: daysToEnd <= 7 ? "high" : "medium" });
+    } else {
+      warrantyAlerts.push({ applianceName: w.applianceName, type: "warranty_active", message: `✅ Warranty for ${w.applianceName} is active (${daysToEnd} days remaining)`, severity: "low" });
     }
 
     if (w.nextServiceDate) {
@@ -34,6 +36,8 @@ const getAllAlerts = asyncHandler(async (req, res) => {
         warrantyAlerts.push({ applianceName: w.applianceName, type: "service_overdue", message: `🔧 Service overdue for ${w.applianceName} by ${Math.abs(daysToService)} days`, severity: "high" });
       } else if (daysToService <= 14) {
         warrantyAlerts.push({ applianceName: w.applianceName, type: "service_due", message: `🔧 Service due for ${w.applianceName} in ${daysToService} day${daysToService === 1 ? "" : "s"}`, severity: "medium" });
+      } else {
+        warrantyAlerts.push({ applianceName: w.applianceName, type: "service_active", message: `✅ Next service for ${w.applianceName} is scheduled in ${daysToService} days`, severity: "low" });
       }
     }
   });
