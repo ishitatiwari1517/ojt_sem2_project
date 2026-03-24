@@ -1,16 +1,6 @@
 const logger = require("../utils/logger");
 
-/**
- * Enhanced centralized error handler middleware.
- * Must be registered LAST in app.js / server.js (after all routes).
- *
- * Handles:
- *  - Mongoose ValidationError  → 400
- *  - Mongoose CastError        → 400
- *  - MongoDB duplicate key     → 409
- *  - JWT errors                → 401
- *  - Everything else           → 500
- */
+
 const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || "Internal Server Error";

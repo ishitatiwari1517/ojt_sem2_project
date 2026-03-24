@@ -5,6 +5,8 @@ const {
   calculateBill,
   getTotalUnitsInRange,
   getDefaultTariff,
+  getTariffByState,
+  seedDefaultTariffs,
 } = require("../processing/billingEngine");
 
 // GET /api/bills/tariffs — list available tariff slabs
@@ -30,7 +32,12 @@ const calculateBillForRange = asyncHandler(async (req, res) => {
       throw new Error("Tariff slab not found.");
     }
   } else {
-    tariff = await getDefaultTariff();
+    // Use user's state to get tariff, fallback to default if state not set or no tariff for that state
+    if (req.user.state) {
+      tariff = await getTariffByState(req.user.state);
+    } else {
+      tariff = await getDefaultTariff();
+    }
     if (!tariff) {
       res.status(404);
       throw new Error(
@@ -116,4 +123,22 @@ const deleteBill = asyncHandler(async (req, res) => {
   res.json({ success: true, message: "Bill deleted", data: bill });
 });
 
-module.exports = { getTariffs, calculateBillForRange, getBills, getBillById, deleteBill };
+// POST /api/bills/admin/reseed-tariffs — Admin endpoint to reseed all state-wise tariffs
+const reseedTariffs = asyncHandler(async (req, res) => {
+  // Delete all existing tariffs
+  await TariffSlab.deleteMany({});
+  
+  // Reseed all tariffs
+  await seedDefaultTariffs();
+  
+  // Get count of seeded tariffs
+  const count = await TariffSlab.countDocuments();
+  
+  res.json({
+    success: true,
+    message: `Successfully reseeded all tariff slabs. Total: ${count} tariffs`,
+    data: { count },
+  });
+});
+
+module.exports = { getTariffs, calculateBillForRange, getBills, getBillById, deleteBill, reseedTariffs };

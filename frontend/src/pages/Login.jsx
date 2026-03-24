@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { loginUser, signupUser, googleAuthLogin } from "../services/api";
+import { INDIAN_STATES } from "../constants";
 
 export default function Login() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("login");
-  const [form, setForm] = useState({ email: "", password: "", name: "" });
+  const [form, setForm] = useState({ email: "", password: "", name: "", state: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -37,6 +38,10 @@ export default function Login() {
       setError("Please enter your full name.");
       return;
     }
+    if (tab === "signup" && !form.state) {
+      setError("Please select your state for tariff calculation.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -44,7 +49,7 @@ export default function Login() {
       if (tab === "login") {
         res = await loginUser({ email: form.email, password: form.password });
       } else {
-        res = await signupUser({ name: form.name, email: form.email, password: form.password });
+        res = await signupUser({ name: form.name, email: form.email, password: form.password, state: form.state });
       }
 
       // Store token and user info
@@ -131,10 +136,23 @@ export default function Login() {
             </div>
           )}
           {tab === "signup" && (
-            <div style={s.field}>
-              <label style={s.label}>Full Name</label>
-              <input name="name" type="text" placeholder="Your name" value={form.name} onChange={handleChange} style={s.input} required />
-            </div>
+            <>
+              <div style={s.field}>
+                <label style={s.label}>Full Name</label>
+                <input name="name" type="text" placeholder="Your name" value={form.name} onChange={handleChange} style={s.input} required />
+              </div>
+              <div style={s.field}>
+                <label style={s.label}>State (for Tariff Calculation)</label>
+                <select name="state" value={form.state} onChange={handleChange} style={s.input} required>
+                  <option value="">Select your state...</option>
+                  {INDIAN_STATES.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
           )}
           <div style={s.field}>
             <label style={s.label}>Email</label>

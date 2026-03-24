@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { INDIAN_STATES } = require("../utils/constants");
 
 const userSchema = new mongoose.Schema(
   {
@@ -13,6 +14,11 @@ const userSchema = new mongoose.Schema(
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
     },
     password: { type: String, minlength: 6 },
+    state: {
+      type: String,
+      enum: INDIAN_STATES,
+      default: null,
+    },
     googleId: { type: String, default: null },
     avatar: { type: String, default: null },
     subscription: {
