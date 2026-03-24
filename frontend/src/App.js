@@ -13,6 +13,7 @@ import Predictions from "./pages/Predictions";
 import Alerts from "./pages/Alerts";
 import Insights from "./pages/Insights";
 import Warranty from "./pages/Warranty";
+import Reports from "./pages/Reports";
 import "./index.css";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="alerts" element={<Alerts />} />
           <Route path="insights" element={<Insights />} />
           <Route path="warranty" element={<Warranty />} />
+          <Route path="reports" element={<Reports />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -13,6 +13,7 @@ import {
   Lightbulb,
   Shield,
   LogOut,
+  FileText,
 } from "lucide-react";
 import SubscriptionModal from "./SubscriptionModal";
 
@@ -24,6 +25,7 @@ const freeItems = [
   { to: "/alerts", icon: Bell, label: "Alerts" },
   { to: "/insights", icon: Lightbulb, label: "Insights" },
   { to: "/warranty", icon: Shield, label: "Warranty" },
+  { to: "/reports", icon: FileText, label: "Reports" },
 ];
 
 const premiumItems = [
