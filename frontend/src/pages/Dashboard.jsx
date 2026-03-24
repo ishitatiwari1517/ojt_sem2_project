@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
-  Zap, DollarSign, Activity, Bell, TrendingUp, TrendingDown,
+  Zap, DollarSign, Activity, TrendingUp, TrendingDown,
   Clock, Star, BarChart2, MapPin, Sun,
 } from "lucide-react";
 import { LineChart, DoughnutChart } from "../components/ChartComponent";
-import AlertBanner from "../components/AlertBanner";
-import { fetchDashboard, fetchAlerts } from "../services/api";
+import { fetchDashboard } from "../services/api";
 
 /* ─── Live ECG pulse (matches landing page aesthetic) ─── */
 function PulseLine() {
@@ -89,7 +88,6 @@ function Sparkbars({ data = [], color = "#00e676" }) {
 
 export default function Dashboard() {
   const [dash, setDash]       = useState(null);
-  const [alerts, setAlerts]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [city, setCity]       = useState(null);
   const [tick, setTick]       = useState(0); // animated counter
@@ -101,10 +99,8 @@ export default function Dashboard() {
 
   const load = useCallback(async () => {
     try {
-      const [dRes, aRes] = await Promise.all([fetchDashboard(), fetchAlerts()]);
+      const dRes = await fetchDashboard();
       setDash(dRes.data.data);
-      const ad = aRes.data.data;
-      setAlerts(Array.isArray(ad) ? ad : [...(ad?.activeAlerts || []), ...(ad?.savedAlerts || [])]);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   }, []);
@@ -176,12 +172,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Alerts strip ── */}
-      {alerts.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
-          <AlertBanner alerts={alerts.slice(0, 2)} />
-        </div>
-      )}
 
       {/* ══════════════════════════════════════════
           BENTO GRID  — row 1
@@ -241,20 +231,6 @@ export default function Dashboard() {
           <div style={S.cellSub}>data entries logged</div>
         </div>
 
-        {/* CELL E — Alerts */}
-        <div style={{ ...S.cell, ...S.cellE, borderColor: alerts.length > 0 ? "rgba(239,83,80,0.3)" : "#1e2d40" }}>
-          <div style={S.cellLabel}>
-            <Bell size={13} color={alerts.length > 0 ? "#ef5350" : "#5c6370"} style={{ marginRight: 5 }} />
-            ALERTS
-          </div>
-          <div style={{ ...S.medNum, color: alerts.length > 0 ? "#ef5350" : "#5c6370" }}>
-            {loading ? "—" : alerts.length}
-          </div>
-          <div style={S.cellSub}>{alerts.length > 0 ? "action required" : "all clear"}</div>
-          {alerts.length > 0 && (
-            <div style={S.alertDot} />
-          )}
-        </div>
 
         {/* CELL F — MoM change */}
         <div style={{ ...S.cell, ...S.cellF }}>
@@ -397,9 +373,8 @@ const S = {
   /* Cell slots */
   cellA: { gridColumn: "1 / 3", gridRow: "1 / 2" },   // wide — live kWh
   cellB: { gridColumn: "3 / 4", gridRow: "1 / 2" },   // cost
-  cellC: { gridColumn: "4 / 5", gridRow: "1 / 2" },   // ring gauge
+  cellC: { gridColumn: "2 / 3", gridRow: "2 / 3" },   // ring gauge
   cellD: { gridColumn: "1 / 2", gridRow: "2 / 3" },   // records
-  cellE: { gridColumn: "2 / 3", gridRow: "2 / 3" },   // alerts
   cellF: { gridColumn: "3 / 4", gridRow: "2 / 3" },   // mom
   cellG: { gridColumn: "4 / 5", gridRow: "1 / 3" },   // peak + top appliance (tall, 2 rows)
 
