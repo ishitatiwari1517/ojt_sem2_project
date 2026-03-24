@@ -11,7 +11,6 @@ import {
   Bell,
   Crown,
   Lightbulb,
-  CloudSun,
   Shield,
   LogOut,
 } from "lucide-react";
@@ -22,7 +21,6 @@ const freeItems = [
   { to: "/appliances", icon: Zap, label: "Appliances" },
   { to: "/data-input", icon: Database, label: "Data Input" },
   { to: "/analysis", icon: BarChart2, label: "Analysis" },
-  { to: "/seasonal", icon: CloudSun, label: "Seasonal" },
   { to: "/alerts", icon: Bell, label: "Alerts" },
   { to: "/insights", icon: Lightbulb, label: "Insights" },
   { to: "/warranty", icon: Shield, label: "Warranty" },

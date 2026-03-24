@@ -10,7 +10,7 @@ const PLANS = {
   },
   premium: {
     name: "Premium", price: 99, currency: "INR", billingPeriod: "month",
-    features: ["Everything in Free", "Tariff slab billing engine", "Full bill history & PDF export", "Advanced usage predictions (ML-based)", "Seasonal analysis & insights", "Budget alerts & notifications", "Unlimited CSV import", "Data export (Excel/CSV)", "Priority email support"],
+    features: ["Everything in Free", "Tariff slab billing engine", "Full bill history & PDF export", "Advanced usage predictions (ML-based)", "Budget alerts & notifications", "Unlimited CSV import", "Data export (Excel/CSV)", "Priority email support"],
   },
 };
 

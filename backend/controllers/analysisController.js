@@ -1,5 +1,4 @@
-const asyncHandler = require("../utils/asyncHandler");
-const { getSeasonalAnalysis } = require("../processing/seasonalEngine");
+
 const { getApplianceBreakdown } = require("../processing/analysisEngine");
 const UsageRecord = require("../models/UsageRecord");
 
@@ -13,15 +12,6 @@ const getApplianceAnalysis = asyncHandler(async (req, res) => {
   });
 });
 
-// GET /api/analysis/seasonal
-const getSeasonalData = asyncHandler(async (req, res) => {
-  const data = await getSeasonalAnalysis();
-  res.json({
-    success: true,
-    message: data.seasons.length === 0 ? "No seasonal data found" : "Seasonal analysis retrieved",
-    data,
-  });
-});
 
 // GET /api/analysis/summary — financial + usage summary
 const getAnalysisSummary = asyncHandler(async (req, res) => {
@@ -63,4 +53,4 @@ const getAnalysisSummary = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getApplianceAnalysis, getSeasonalData, getAnalysisSummary };
+module.exports = { getApplianceAnalysis, getAnalysisSummary };

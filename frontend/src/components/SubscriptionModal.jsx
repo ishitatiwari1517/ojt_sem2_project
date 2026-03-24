@@ -29,7 +29,6 @@ const premiumFeatures = [
   "Tariff slab billing engine",
   "Full bill history & export",
   "Advanced usage predictions",
-  "Seasonal analysis & insights",
   "Budget alerts & notifications",
   "Unlimited CSV import",
   "Data export (Excel/CSV)",

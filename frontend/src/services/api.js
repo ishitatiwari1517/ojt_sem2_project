@@ -81,8 +81,7 @@ export const downgradePlan = () => API.put("/subscription/downgrade");
 // ─── Insights / Recommendations ─────────────────────────
 export const fetchRecommendations = () => API.get("/insights/recommendations");
 
-// ─── Seasonal Analysis ───────────────────────────────────
-export const fetchSeasonalAnalysis = () => API.get("/analysis/seasonal");
+
 
 // ─── Export ─────────────────────────────────────────────
 export const exportUsageCSV = (params = {}) =>

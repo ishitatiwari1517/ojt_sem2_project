@@ -24,7 +24,7 @@ const requirePremium = (req, res, next) => {
           "Tariff slab billing engine",
           "Advanced predictions",
           "Bill history & estimator",
-          "Seasonal analysis",
+
           "Data export",
           "Priority support",
         ],

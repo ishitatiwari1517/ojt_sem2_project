@@ -12,7 +12,6 @@ import Bills from "./pages/Bills";
 import Predictions from "./pages/Predictions";
 import Alerts from "./pages/Alerts";
 import Insights from "./pages/Insights";
-import SeasonalAnalysis from "./pages/SeasonalAnalysis";
 import Warranty from "./pages/Warranty";
 import "./index.css";
 
@@ -36,7 +35,6 @@ function App() {
           <Route path="predictions" element={<Predictions />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="insights" element={<Insights />} />
-          <Route path="seasonal" element={<SeasonalAnalysis />} />
           <Route path="warranty" element={<Warranty />} />
         </Route>
 
