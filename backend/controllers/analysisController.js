@@ -1,4 +1,4 @@
-
+const asyncHandler = require("../utils/asyncHandler");
 const { getApplianceBreakdown } = require("../processing/analysisEngine");
 const UsageRecord = require("../models/UsageRecord");
 
