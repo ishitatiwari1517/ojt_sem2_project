@@ -146,6 +146,7 @@ exports.googleAuth = asyncHandler(async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar || picture,
+        state: user.state,
         subscription: user.subscription,
       },
     },
